@@ -3,6 +3,7 @@ const priceSlider = document.getElementById("priceSlider");
 const salesInput = document.getElementById("sales");
 const salesSlider = document.getElementById("salesSlider");
 const exchangeRateInput = document.getElementById("exchangeRate");
+const platformFeeInput = document.getElementById("platformFee");
 const earningUSD = document.getElementById("earningUSD");
 const earningINR = document.getElementById("earningINR");
 const priceINR = document.getElementById("priceINR");
@@ -11,12 +12,15 @@ function calculateEarning() {
     const price = parseFloat(priceInput.value);
     const sales = parseFloat(salesInput.value);
     const exchangeRate = parseFloat(exchangeRateInput.value);
+    const platformFee = parseFloat(platformFeeInput.value) / 100; // Convert percentage to decimal
 
     const potentialEarningUSD = price * sales;
-    const potentialEarningINR = potentialEarningUSD * exchangeRate;
+    const platformCut = potentialEarningUSD * platformFee;
+    const earningAfterPlatform = potentialEarningUSD - platformCut;
+    const potentialEarningINR = earningAfterPlatform * exchangeRate;
     const priceInINR = price * exchangeRate;
 
-    earningUSD.textContent = potentialEarningUSD.toLocaleString();
+    earningUSD.textContent = earningAfterPlatform.toLocaleString();
     earningINR.textContent = potentialEarningINR.toLocaleString();
     priceINR.textContent = priceInINR.toLocaleString();
 
@@ -46,6 +50,7 @@ salesSlider.addEventListener("input", () => {
 });
 
 exchangeRateInput.addEventListener("input", calculateEarning);
+platformFeeInput.addEventListener("input", calculateEarning);
 
 // Initial calculation
 calculateEarning();
